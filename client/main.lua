@@ -95,6 +95,7 @@ CreateThread(function()
         else
             Wait(200)
         end
+        Wait(1)
     end
 end)
 
