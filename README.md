@@ -8,4 +8,6 @@ Code is cleaned removed things that dont get used and config removed too ( fuck 
 
 When code got cleaned it wasnt tested so if you have any issue you can contact me at cfx.re - https://forum.cfx.re/u/ddainusshaa/summary
 
+You need to add item (rope) in your shared.lua but if you aleardy have the rope item you can change your name in server/main.lua
+
 Preview - https://youtu.be/YlAFVZpkwzo
