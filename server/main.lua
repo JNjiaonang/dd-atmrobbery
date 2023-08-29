@@ -6,7 +6,7 @@ AddEventHandler("dd-atmrobbery:server:getReward", function()
     local Player = QBCore.Functions.GetPlayer(src)
     local random = math.random(10000, 20000)
     Player.Functions.AddMoney("cash", tonumber(random), "ATM")
-    TriggerClientEvent("QBCore:Notify", src, "You got" .. tonumber(random) .. ' $', "success")
+    TriggerClientEvent("QBCore:Notify", src, "You got " .. tonumber(random) .. ' $', "success")
 end)
 
 RegisterServerEvent("dd-atmrobbery:server:spawnRope")
@@ -37,13 +37,6 @@ end)
 RegisterServerEvent("dd-atmrobbery:server:deleteRopeProp")
 AddEventHandler("dd-atmrobbery:server:deleteRopeProp", function(Rope)
     TriggerClientEvent("dd-atmrobbery:client:deleteRopeProp", -1, Rope)
-end)
-
-RegisterServerEvent("dd-atmrobbery:server:ropeDelete")
-AddEventHandler("dd-atmrobbery:server:ropeDelete", function()
-    local src = source
-    local ply = QBCore.Functions.GetPlayer(src)
-    ply.Functions.RemoveItem("rope", 1, false)
 end)
 
 QBCore.Functions.CreateUseableItem("rope", function(source, item)

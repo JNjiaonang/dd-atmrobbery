@@ -1,16 +1,37 @@
 local QBCore, Rope, DrawText, RobberyStarted, Vehicle, inVehicle, CurrentCops = exports['qb-core']:GetCoreObject(), nil, false, false, nil, inVehicle, 0
-loadExistModel("loq_atm_02_console")
-loadExistModel("loq_atm_02_des")
-loadExistModel("loq_atm_03_console")
-loadExistModel("loq_atm_03_des")
-loadExistModel("loq_fleeca_atm_console")
-loadExistModel("loq_fleeca_atm_des")
 
-local models = {
-    GetHashKey("loq_fleeca_atm_console"),
-    GetHashKey("loq_atm_02_console"),
-    GetHashKey("loq_atm_03_console")
-}
+function ATMObject()
+    for k,v in pairs({"prop_atm_02", "prop_atm_03", "prop_fleeca_atm"}) do
+        local obj = GetClosestObjectOfType(GetEntityCoords(PlayerPedId()), 5.0, GetHashKey(v))
+        if DoesEntityExist(obj) then
+            local ATMObject = {
+                prop = obj,
+                type = v
+            }
+            return ATMObject
+        end
+    end
+    return nil
+end
+
+function ATMConsole()
+    for k,v in pairs({"loq_fleeca_atm_console", "loq_atm_02_console", "loq_atm_03_console"}) do 
+        local obj = GetClosestObjectOfType(GetEntityCoords(PlayerPedId()), 5.0, GetHashKey(v))
+        if DoesEntityExist(obj) then
+            return obj
+        end
+    end
+    return nil
+end
+
+function loadExistModel(hash)
+    if not HasModelLoaded(hash) then
+        RequestModel(hash)
+        while not HasModelLoaded(hash) do
+            Wait(1)
+        end
+    end
+end
 
 RegisterNetEvent('police:SetCopCount')
 AddEventHandler('police:SetCopCount', function(amount)
@@ -24,7 +45,7 @@ CreateThread(function()
             if IsControlJustPressed(1, 73) then
                 RobberyStarted = false
                 DrawText = false
-                TriggerServerEvent("dd-atmrobbery:server:deleteRopeProp", rope)
+                TriggerServerEvent("dd-atmrobbery:server:deleteRopeProp", Rope)
                 exports["qb-core"]:HideText()
             elseif IsControlJustPressed(1, 38) then
                 exports["qb-core"]:HideText()
@@ -42,7 +63,7 @@ CreateThread(function()
                     anim = 'hotwire',
                     flags = 16,
                 }, {}, {}, function() -- Play When Done
-                    exports["ps-dispatch"]:SuspiciousActivity()
+                    --exports["ps-dispatch"]:SuspiciousActivity()
                     ClearPedTasks(PlayerPed)
                     local ObjectDes = nil
                     local ObjectConsole = nil
@@ -92,16 +113,16 @@ CreateThread(function()
                     RobberyStarted = false
                 end)
             end
+            Wait(1)
         else
-            Wait(500)
+            Wait(150)
         end
-        Wait(1)
     end
 end)
 
 RegisterNetEvent("dd-atmrobbery:client:ropeUsed")
 AddEventHandler("dd-atmrobbery:client:ropeUsed", function()
-    if CurrentCops >= 2 then
+    if CurrentCops >= 0 then
         local PlayerPed = PlayerPedId()
         Vehicle = QBCore.Functions.GetClosestVehicle()
         if not IsPedInAnyVehicle(PlayerPed, false) then
@@ -117,7 +138,6 @@ AddEventHandler("dd-atmrobbery:client:ropeUsed", function()
                 flags = 16,
             }, {}, {}, function()
                 ClearPedTasks(PlayerPed)
-                TriggerServerEvent("dd-atmrobbery:server:ropeDelete")
                 TriggerServerEvent("dd-atmrobbery:server:spawnRope")
                 RobberyStarted = true
                 DrawText = true
@@ -182,7 +202,7 @@ AddEventHandler("dd-atmrobbery:client:attachATM", function(ATMObjectProp, Object
     local NetProp = NetToEnt(ATMObjectProp)
     local ObjectCoords = GetEntityCoords(NetObject)
     SetEntityCoords(NetProp, ObjectCoordsx, ObjectCoordsy, ObjectCoordsz - 10.0)
-    AttachEntitiesToRope(rope, NetVeh, NetObject, GetOffsetFromEntityInWorldCoords(NetVeh, 0, -2.3, 0.5), ObjectCoords.x, ObjectCoords.y, ObjectCoords.z + 1.0, 7.0, 0, 0, "rope_attach_a", "rope_attach_b")
+    AttachEntitiesToRope(Rope, NetVeh, NetObject, GetOffsetFromEntityInWorldCoords(NetVeh, 0, -2.3, 0.5), ObjectCoords.x, ObjectCoords.y, ObjectCoords.z + 1.0, 7.0, 0, 0, "rope_attach_a", "rope_attach_b")
 end)
 
 RegisterNetEvent("dd-atmrobbery:client:spawnATM")
@@ -204,6 +224,20 @@ AddEventHandler("dd-atmrobbery:client:deleteRopeProp", function(Rope)
     Rope = nil
 end)
 
+loadExistModel("loq_atm_02_console")
+loadExistModel("loq_atm_02_des")
+loadExistModel("loq_atm_03_console")
+loadExistModel("loq_atm_03_des")
+loadExistModel("loq_fleeca_atm_console")
+loadExistModel("loq_fleeca_atm_des")
+
+local models = {
+    GetHashKey("loq_fleeca_atm_console"),
+    GetHashKey("loq_atm_02_console"),
+    GetHashKey("loq_atm_03_console")
+}
+
+
 exports["qb-target"]:AddTargetModel(models, {
     options = {
         {
@@ -215,38 +249,3 @@ exports["qb-target"]:AddTargetModel(models, {
     job = {"all"},
     distance = 2.5
 })
-
-function ATMObject()
-    for k,v in pairs({"prop_atm_02", "prop_atm_03", "prop_fleeca_atm"}) do
-        local obj = GetClosestObjectOfType(GetEntityCoords(PlayerPedId()), 5.0, GetHashKey(v))
-        if DoesEntityExist(obj) then
-            local ATMObject = {
-                prop = obj,
-                type = v
-            }
-            return ATMObject
-        end
-    end
-    return nil
-end
-
-
-function ATMConsole()
-    for k,v in pairs({"loq_fleeca_atm_console", "loq_atm_02_console", "loq_atm_03_console"}) do 
-        local obj = GetClosestObjectOfType(GetEntityCoords(PlayerPedId()), 5.0, GetHashKey(v))
-        if DoesEntityExist(obj) then
-            return obj
-        end
-    end
-    return nil
-end
-
-
-function loadExistModel(hash)
-    if not HasModelLoaded(hash) then
-        RequestModel(hash)
-        while not HasModelLoaded(hash) do
-            Wait(1)
-        end
-    end
-end
