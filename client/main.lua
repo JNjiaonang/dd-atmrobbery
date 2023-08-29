@@ -93,7 +93,7 @@ CreateThread(function()
                 end)
             end
         else
-            Wait(200)
+            Wait(500)
         end
         Wait(1)
     end
