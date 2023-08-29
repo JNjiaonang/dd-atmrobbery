@@ -63,7 +63,7 @@ CreateThread(function()
                     anim = 'hotwire',
                     flags = 16,
                 }, {}, {}, function() -- Play When Done
-                    --exports["ps-dispatch"]:SuspiciousActivity()
+                    --exports["ps-dispatch"]:SuspiciousActivity() -- Put your dispatch here
                     ClearPedTasks(PlayerPed)
                     local ObjectDes = nil
                     local ObjectConsole = nil
@@ -122,7 +122,7 @@ end)
 
 RegisterNetEvent("dd-atmrobbery:client:ropeUsed")
 AddEventHandler("dd-atmrobbery:client:ropeUsed", function()
-    if CurrentCops >= 0 then
+    if CurrentCops >= 2 then
         local PlayerPed = PlayerPedId()
         Vehicle = QBCore.Functions.GetClosestVehicle()
         if not IsPedInAnyVehicle(PlayerPed, false) then
